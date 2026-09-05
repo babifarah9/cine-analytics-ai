@@ -9,11 +9,15 @@ export default function SimulationControls({ filmTitle, onSimulationTriggered, d
     setLoading(true);
     setActiveSimulation(eventType);
     try {
-      await fetch('/api/simulate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ event_type: eventType, film_id: filmTitle })
-      });
+      try {
+        await fetch('/api/simulate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event_type: eventType, film_id: filmTitle })
+        });
+      } catch (e) {
+        console.warn('Backend simulation endpoint unreachable, updating local state:', e);
+      }
       if (onSimulationTriggered) onSimulationTriggered();
     } catch (err) {
       console.error(err);
